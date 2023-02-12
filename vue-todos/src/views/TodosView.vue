@@ -20,19 +20,34 @@ const createTodo = (todo) => {
 const toggleTodoComplete = (index) => {
   todoList.value[index].isCompleted = !todoList.value[index].isCompleted;
 };
+const toggleEditTodo = (index) => {
+  todoList.value[index].isEditing = !todoList.value[index].isEditing;
+};
+
+const updateTodo = (todo, index) => {
+  todoList.value[index].todo = todo;
+};
+
+const deleteTodo = (id) => {
+  todoList.value = todoList.value.filter((todo) => todo.id !== id);
+};
 </script>
 
 <template>
   <main>
     <h1>Create Todo</h1>
     <TodoCreator @create-todo="createTodo">
-      <template #button-content>Create</template>
     </TodoCreator>
     <ul class="todo-list" v-if="todoList.length > 0">
       <TodoItem v-for="(todo, index) in todoList"
                 :todo="todo"
                 :index="index"
-                @toggle-complete="toggleTodoComplete"/>
+                :key="todo.id"
+                @toggle-complete="toggleTodoComplete"
+                @edit-todo="toggleEditTodo"
+                @update-todo="updateTodo"
+                @delete-todo="deleteTodo"
+      />
     </ul>
     <p v-else class="todos-msg">
       <Icon icon="noto-v1:sad-but-relieved-face" width="70"/>
