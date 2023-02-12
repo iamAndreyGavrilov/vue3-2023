@@ -1,14 +1,21 @@
 <script setup>
 import {uid} from "uid";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {Icon} from "@iconify/vue";
 import TodoCreator from "../components/TodoCreator.vue";
 import TodoItem from "../components/TodoItem.vue";
 
 const todoList = ref([]);
+
+watch(todoList, () => {
+  setTodoListLocalStorage();
+}, {deep: true});
+
+// deep это глубокое отслеживание, чтобы отслеживать изменения внутри объектов и массивов
 const setTodoListLocalStorage = () => {
   localStorage.setItem("todoList", JSON.stringify(todoList.value));
 };
+// setTodoListLocalStorage сохранение данных в localStorage при добавлении нового todo
 
 const fetchTodoListLocalStorage = () => {
   const todoListLocalStorage = JSON.parse(localStorage.getItem("todoList"));
@@ -26,26 +33,22 @@ const createTodo = (todo) => {
     isCompleted: null,
     isEditing: null,
   });
-  setTodoListLocalStorage(); // сохранение данных в localStorage при добавлении нового todo
 };
 
 const toggleTodoComplete = (index) => {
   todoList.value[index].isCompleted = !todoList.value[index].isCompleted;
-  setTodoListLocalStorage();
+
 };
 const toggleEditTodo = (index) => {
   todoList.value[index].isEditing = !todoList.value[index].isEditing;
-  setTodoListLocalStorage();
 };
 
 const updateTodo = (todo, index) => {
   todoList.value[index].todo = todo;
-  setTodoListLocalStorage();
 };
 
 const deleteTodo = (id) => {
   todoList.value = todoList.value.filter((todo) => todo.id !== id);
-  setTodoListLocalStorage();
 };
 </script>
 
